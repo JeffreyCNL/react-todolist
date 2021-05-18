@@ -1,4 +1,6 @@
 import React, {Component, Fragment} from 'react';
+import './style.css'
+import TodoItem from './todoItem';
 
 class TodoList extends Component {
     constructor(props) {
@@ -7,50 +9,86 @@ class TodoList extends Component {
             inputValue: '',
             list: []
         }
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.handleItemDel = this.handleItemDel.bind(this);
     }
     render() {
         return (
             <Fragment>
                 <div> 
-                    <input 
+                    <lable htmlFor='insertArea'> Content</lable>
+                    <input
+                        id='insertArea'
+                        className='input' 
                         value={this.state.inputValue}
-                        onChange={this.handleInputChange.bind(this)}
+                        onChange={this.handleInputChange}
                     >
                     </input>
-                    <button onClick={this.handleBtnClick.bind(this)}>
+                    <button onClick={this.handleBtnClick}>
                         Submit
                     </button>
                 </div>
                 <ul>
-                    {
-                        this.state.list.map((item, index) => {
-                            return <li key={index} onClick={this.handleItemDel.bind(this)}>{item}</li>
-                        })
-                    }
+                    {this.getTodoItem()}
                 </ul>
             </Fragment>
         )
     }
 
+    getTodoItem() {
+        return (
+
+            this.state.list.map((item, index) => {
+                return (
+                    <div key={index}>
+                        <TodoItem 
+                            content={item} 
+                            index={index}
+                            deleteItem={this.handleItemDel}
+                        />
+                    </div>
+                )
+    
+            })
+        )
+    }
+
     handleInputChange(e) {
-        this.setState({
-            inputValue : e.target.value
+        this.setState(() => {
+            return {
+                inputValue: e.target.value
+            }
         })
+        // this.setState({
+        //     inputValue : e.target.value
+        // })
     }
 
     handleBtnClick(e) {
-        this.setState({
-            list: [...this.state.list, this.state.inputValue], 
+        this.setState((prevState) => ({
+            list: [...prevState.list, prevState.inputValue],
             inputValue: ''
-        })
+        }))
+        // this.setState({
+        //     list: [...this.state.list, this.state.inputValue], 
+        //     inputValue: ''
+        // })
     }
 
     handleItemDel(index) {
-        const list = [...this.state.list];
-        list.splice(index, 1);
-        this.setState({
-            list : list
+        // const list = [...this.state.list];
+        // list.splice(index, 1);
+        this.setState((prevState) => {
+            const list = [...prevState.list];
+            list.splice(index, 1);
+            return {
+                list
+            }
         })
+        // this.setState({
+        //     list : list
+        // })
     }
 }
 
